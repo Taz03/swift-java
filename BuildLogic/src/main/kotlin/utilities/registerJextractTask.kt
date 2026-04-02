@@ -19,6 +19,7 @@ import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.buildinit.plugins.internal.modifiers.Language
 import org.gradle.kotlin.dsl.register
 import java.io.File
 
@@ -55,6 +56,7 @@ private fun Project.registerSwiftCheckValidTask(): TaskProvider<*> = tasks.regis
 }
 
 fun Project.registerJextractTask(
+    language: Language = Language.JAVA,
     arguments: () -> List<String> = {
         listOf("build", "--disable-experimental-prebuilts")
     }
