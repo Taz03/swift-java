@@ -15,15 +15,7 @@ extension Swift2KotlinGenerator {
   ) {
     // let translated = self.translatedDecl(for: decl)!
     let methodName = decl.name
-
-    var modifiers = "public"
-    switch decl.functionSignature.selfParameter {
-    case .staticMethod, .initializer, nil:
-      modifiers.append(" static")
-    default:
-      break
-    }
-
+    
     // let translatedSignature = translated.translatedSignature
     let returnTy = decl.functionSignature.result.type.asNominalTypeDeclaration?.name ?? "Unit"
 
@@ -34,11 +26,13 @@ extension Swift2KotlinGenerator {
       (param.parameterName ?? "name") + ": " + (param.type.asNominalTypeDeclaration?.name ?? "Unit")
     }
     
-//    TranslatedKotlinDocumentation.printDocumentation(
-//      importedFunc: decl,
-//      translatedDecl: translated,
-//      in: &printer,
-//    )
+    var documentation = SwiftDocumentationParser.parse(decl.swiftDecl)
+    
+    TranslatedDocumentation.printDocumentation(
+      documentation,
+      syntax: decl.swiftDecl,
+      in: &printer,
+    )
     printer.printBraceBlock(
       """
       fun \(methodName)(\(paramDecls.joined(separator: ", "))): \(returnTy)

@@ -58,7 +58,7 @@ enum TranslatedDocumentation {
     printDocumentation(documentation, syntax: importedFunc.swiftDecl, config: config, in: &printer)
   }
 
-  private static func printDocumentation(
+  static func printDocumentation(
     _ parsedDocumentation: SwiftDocumentation?,
     syntax: some DeclSyntaxProtocol,
     config: Configuration,
