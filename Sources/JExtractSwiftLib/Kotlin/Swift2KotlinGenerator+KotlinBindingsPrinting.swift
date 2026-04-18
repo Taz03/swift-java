@@ -17,13 +17,15 @@ extension Swift2KotlinGenerator {
     let methodName = decl.name
     
     // let translatedSignature = translated.translatedSignature
-    let returnTy = decl.functionSignature.result.type.asNominalTypeDeclaration?.name ?? "Unit"
+    let returnTy = decl.functionSignature.result.type
+    let translatedReturnTy = translateType(swiftType: returnTy, isNullable: false).description
 
     // var annotationsStr = translatedSignature.annotations.map({ $0.render() }).joined(separator: "\n")
     // if !annotationsStr.isEmpty { annotationsStr += "\n" }
 
     let paramDecls = decl.functionSignature.parameters.map { param in
-      (param.parameterName ?? "name") + ": " + (param.type.asNominalTypeDeclaration?.name ?? "Unit")
+      let translatedParamTy = translateType(swiftType: param.type, isNullable: false)
+      return "\(param.parameterName ?? "name"): \(translatedParamTy.description)"
     }
     
     var documentation = SwiftDocumentationParser.parse(decl.swiftDecl)
@@ -35,7 +37,7 @@ extension Swift2KotlinGenerator {
     )
     printer.printBraceBlock(
       """
-      fun \(methodName)(\(paramDecls.joined(separator: ", "))): \(returnTy)
+      fun \(methodName)(\(paramDecls.joined(separator: ", "))): \(translatedReturnTy)
       """
     ) { printer in
       printer.print("TODO(\"Not implemented\")")

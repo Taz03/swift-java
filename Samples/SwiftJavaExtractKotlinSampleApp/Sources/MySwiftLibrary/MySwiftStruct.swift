@@ -70,15 +70,15 @@ public struct MySwiftStruct {
     self.subscriptArray[index]
   }
 
-  public subscript() -> Int {
-    get { subscriptValue }
-    set { subscriptValue = newValue }
-  }
-
-  public subscript(index: Int) -> Int {
-    get { subscriptArray[index] }
-    set { subscriptArray[index] = newValue }
-  }
+//   public subscript() -> Int {
+//     get { subscriptValue }
+//     set { subscriptValue = newValue }
+//   }
+//
+//   public subscript(index: Int) -> Int {
+//     get { subscriptArray[index] }
+//     set { subscriptArray[index] = newValue }
+//   }
 
   // operator functions are ignored.
   public static func == (lhs: MySwiftStruct, rhs: MySwiftStruct) -> Bool {
