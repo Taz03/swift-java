@@ -22,39 +22,6 @@ package class Swift2KotlinGenerator: Swift2JavaGenerator {
     kotlinPackage.replacingOccurrences(of: ".", with: "/")
   }
 
-  var thunkNameRegistry: ThunkNameRegistry = ThunkNameRegistry()
-
-  /// Cached Java translation result. 'nil' indicates failed translation.
-  // var translatedDecls: [ImportedFunc: TranslatedFunctionDecl?] = [:]
-
-  /// Duplicate identifier tracking for the current batch of methods being generated.
-  // var currentJavaIdentifiers: JavaIdentifierFactory = JavaIdentifierFactory()
-
-  /// Which Java class to use for `findOrThrow` native symbol lookup
-  package enum SymbolLookupTarget {
-    /// Use the generated module class (e.g. `MySwiftLibrary`)
-    case module
-    /// Use `SwiftRuntime` (for types whose symbols live in the runtime library)
-    case swiftRuntime
-
-    func javaClassName(moduleName: String) -> String {
-      switch self {
-      case .module: moduleName
-      case .swiftRuntime: "SwiftRuntime"
-      }
-    }
-  }
-
-  /// Override symbol lookup class for the current type being generated
-  var currentSymbolLookup: SymbolLookupTarget = .module
-
-  /// Because we need to write empty files for SwiftPM, keep track which files we didn't write yet,
-  /// and write an empty file for those.
-  ///
-  /// Since Swift files in SwiftPM builds needs to be unique, we use this fact to flatten paths into plain names here.
-  /// For uniqueness checking "did we write this file already", just checking the name should be sufficient.
-  var expectedOutputSwiftFileNames: Set<String>
-
   package init(
     config: Configuration,
     translator: Swift2JavaTranslator,
@@ -70,38 +37,7 @@ package class Swift2KotlinGenerator: Swift2JavaGenerator {
     self.swiftOutputDirectory = swiftOutputDirectory
     self.kotlinOutputDirectory = kotlinOutputDirectory
     self.lookupContext = translator.lookupContext
-
-    // If we are forced to write empty files, construct the expected outputs.
-    // It is sufficient to use file names only, since SwiftPM requires names to be unique within a module anyway.
-    if translator.config.writeEmptyFiles ?? false {
-      self.expectedOutputSwiftFileNames = Set(
-        translator.inputs.compactMap { (input) -> String? in
-          guard let fileName = input.path.split(separator: PATH_SEPARATOR).last else {
-            return nil
-          }
-          guard fileName.hasSuffix(".swift") else {
-            return nil
-          }
-          return String(fileName.replacing(".swift", with: "+SwiftJava.swift"))
-        }
-      )
-      // Also include filtered-out files so SwiftPM gets the empty outputs it expects
-      for path in translator.filteredOutPaths {
-        guard let fileName = path.split(separator: PATH_SEPARATOR).last else {
-          continue
-        }
-        if fileName.hasSuffix(".swift") {
-          self.expectedOutputSwiftFileNames.insert(
-            String(fileName.replacing(".swift", with: "+SwiftJava.swift"))
-          )
-        }
-      }
-      self.expectedOutputSwiftFileNames.insert("\(translator.swiftModuleName)Module+SwiftJava.swift")
-      self.expectedOutputSwiftFileNames.insert("Foundation+SwiftJava.swift")
-    } else {
-      self.expectedOutputSwiftFileNames = []
-    }
-  }
+ }
 
   func generate() throws {
     try writeExportedJavaSources()
@@ -158,16 +94,14 @@ extension Swift2KotlinGenerator {
     printHeader(&printer)
     printPackage(&printer)
     
-    printModuleClass(&printer) { printer in
-      for decl in analysis.importedGlobalVariables {
-        self.log.trace("Print imported decl: \(decl)")
-        printKotlinBindingPlaceholder(&printer, decl)
-      }
-      
-      for decl in analysis.importedGlobalFuncs {
-        self.log.trace("Print imported decl: \(decl)")
-        printKotlinBindingPlaceholder(&printer, decl)
-      }
+    for decl in analysis.importedGlobalVariables {
+      self.log.trace("Print imported decl: \(decl)")
+      printKotlinBindingPlaceholder(&printer, decl)
+    }
+    
+    for decl in analysis.importedGlobalFuncs {
+      self.log.trace("Print imported decl: \(decl)")
+      printKotlinBindingPlaceholder(&printer, decl)
     }
   }
   
@@ -230,12 +164,6 @@ extension Swift2KotlinGenerator {
     printer.printBraceBlock(
       "class \(decl.swiftNominal.name) private constructor()"
     ) { printer in
-      body(&printer)
-    }
-  }
-  
-  func printModuleClass(_ printer: inout CodePrinter, body: (inout CodePrinter) -> Void) {
-    printer.printBraceBlock("class \(swiftModuleName) private constructor()") { printer in
       body(&printer)
     }
   }
