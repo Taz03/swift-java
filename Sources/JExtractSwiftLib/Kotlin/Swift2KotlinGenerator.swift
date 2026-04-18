@@ -104,8 +104,6 @@ package class Swift2KotlinGenerator: Swift2JavaGenerator {
   }
 
   func generate() throws {
-    print("Kotlin".magenta)
-    
     try writeExportedJavaSources()
     log.info("Generated Kotlin sources (package: '\(kotlinPackage)') in: \(kotlinOutputDirectory)/")
   }

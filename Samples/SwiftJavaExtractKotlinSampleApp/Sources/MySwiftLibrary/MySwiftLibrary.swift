@@ -28,7 +28,7 @@ import Darwin.C
 public func helloWorld() {
 }
 
-public func globalTakeInt(i: Int) {
+public func globalTakeInt(i: Int?) {
 }
 
 public func globalMakeInt() -> Int {
@@ -155,13 +155,13 @@ public func globalThrowingString(doThrow: Bool) throws -> String {
 // ==== -----------------------------------------------------------------------
 // MARK: Overloaded functions
 
-public func globalOverloaded(a: Int) {
-  p("globalOverloaded(a: \(a))")
-}
-
-public func globalOverloaded(b: Int) {
-  p("globalOverloaded(b: \(b))")
-}
+// public func globalOverloaded(a: Int) {
+//   p("globalOverloaded(a: \(a))")
+// }
+//
+// public func globalOverloaded(b: Int) {
+//   p("globalOverloaded(b: \(b))")
+// }
 
 // ==== Internal helpers
 
