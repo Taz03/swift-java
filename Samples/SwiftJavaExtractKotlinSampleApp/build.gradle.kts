@@ -2,7 +2,8 @@ import org.gradle.buildinit.plugins.internal.modifiers.Language
 import utilities.registerJextractTask
 
 plugins {
-    kotlin("jvm") version "2.3.0"
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlinx.serialization)
     id("build-logic.java-application-conventions")
 }
 
@@ -13,12 +14,29 @@ repositories {
     mavenCentral()
 }
 
-kotlin {
-    jvmToolchain(25)
-}
-
 val jextract = registerJextractTask(language = Language.KOTLIN)
 
+kotlin {
+    macosArm64 {
+        binaries.executable {
+            entryPoint = "com.example.swift.main"
+        }
+    }
+
+    sourceSets.nativeMain {
+        kotlin {
+            srcDir(jextract)
+        }
+    }
+}
+
+registerCleanSwift()
+
+tasks.build {
+    dependsOn(jextract)
+}
+
+/*
 sourceSets {
     main {
         kotlin {
@@ -27,12 +45,6 @@ sourceSets {
     }
 }
 
-tasks.build {
-    dependsOn(jextract)
-}
-
-registerCleanSwift()
-
 dependencies {
     testImplementation(kotlin("test"))
 }
@@ -40,3 +52,4 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+*/
