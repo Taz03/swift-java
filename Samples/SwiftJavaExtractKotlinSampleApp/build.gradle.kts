@@ -1,10 +1,8 @@
-import org.gradle.buildinit.plugins.internal.modifiers.Language
-import utilities.registerJextractTask
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlinx.serialization)
-    id("build-logic.java-application-conventions")
 }
 
 group = "com.example.swift"
@@ -14,10 +12,12 @@ repositories {
     mavenCentral()
 }
 
-val jextract = registerJextractTask(language = Language.KOTLIN)
-
 kotlin {
-    macosArm64 {
+    macosArm64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    targets.withType<KotlinNativeTarget>().configureEach {
         binaries.executable {
             entryPoint = "com.example.swift.main"
         }
@@ -25,31 +25,7 @@ kotlin {
 
     sourceSets.nativeMain {
         kotlin {
-            srcDir(jextract)
+            srcDir(".build/plugins/outputs/swiftjavaextractkotlinsampleapp/MySwiftLibrary/destination/JExtractSwiftPlugin/src/generated")
         }
     }
 }
-
-registerCleanSwift()
-
-tasks.build {
-    dependsOn(jextract)
-}
-
-/*
-sourceSets {
-    main {
-        kotlin {
-            srcDir(jextract)
-        }
-    }
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-*/
