@@ -32,7 +32,7 @@ let package = Package(
         .swiftLanguageMode(.v5)
       ],
       plugins: [
-        .plugin(name: "JExtractSwiftPlugin", package: "swift-java")
+        // .plugin(name: "JExtractSwiftPlugin", package: "swift-java")
       ]
     )
   ]
