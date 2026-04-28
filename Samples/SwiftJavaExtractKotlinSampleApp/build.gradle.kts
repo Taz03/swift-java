@@ -25,7 +25,7 @@ kotlin {
 
     sourceSets.nativeMain {
         kotlin {
-            srcDir(".build/plugins/outputs/swiftjavaextractkotlinsampleapp/MySwiftLibrary/destination/JExtractSwiftPlugin/src/generated")
+            srcDir(".build/plugins/outputs/swiftjavaextractkotlinsampleapp/MySwiftLibrary/destination/JExtractSwiftPlugin/src/generated/kotlin")
         }
     }
 }
