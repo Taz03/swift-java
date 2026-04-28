@@ -1,0 +1,46 @@
+//
+//  Swift2KotlinGenerator+KotlinBindingsPrinting.swift
+//  swift-java
+//
+//  Created by Tanish Azad on 02/04/26.
+//
+
+import CodePrinting
+
+extension Swift2KotlinGenerator {
+  /// Print the calling body that forwards all the parameters to the `methodName`,
+  package func printKotlinBindingPlaceholder(
+    _ printer: inout CodePrinter,
+    _ decl: ImportedFunc,
+  ) {
+    // let translated = self.translatedDecl(for: decl)!
+    let methodName = decl.name
+    
+    // let translatedSignature = translated.translatedSignature
+    let returnTy = decl.functionSignature.result.type
+    let translatedReturnTy = translateType(swiftType: returnTy, isNullable: false).description
+
+    // var annotationsStr = translatedSignature.annotations.map({ $0.render() }).joined(separator: "\n")
+    // if !annotationsStr.isEmpty { annotationsStr += "\n" }
+
+    let paramDecls = decl.functionSignature.parameters.map { param in
+      let translatedParamTy = translateType(swiftType: param.type, isNullable: false)
+      return "\(param.parameterName ?? "name"): \(translatedParamTy.description)"
+    }
+    
+    var documentation = SwiftDocumentationParser.parse(decl.swiftDecl)
+    
+    TranslatedDocumentation.printDocumentation(
+      documentation,
+      syntax: decl.swiftDecl,
+      in: &printer,
+    )
+    printer.printBraceBlock(
+      """
+      fun \(methodName)(\(paramDecls.joined(separator: ", "))): \(translatedReturnTy)
+      """
+    ) { printer in
+      printer.print("TODO(\"Not implemented\")")
+    }
+  }
+}
