@@ -33,6 +33,7 @@ extension Swift2KotlinGenerator {
     TranslatedDocumentation.printDocumentation(
       documentation,
       syntax: decl.swiftDecl,
+      config: config,
       in: &printer,
     )
     printer.printBraceBlock(
