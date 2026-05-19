@@ -17,6 +17,7 @@ package utilities
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.buildinit.plugins.internal.modifiers.Language
 import org.gradle.kotlin.dsl.register
 import java.io.File
 
@@ -32,6 +33,7 @@ private fun Project.registerSwiftCheckValidTask(): TaskProvider<*> = tasks.regis
 }
 
 fun Project.registerJextractTask(
+    language: Language = Language.JAVA,
     arguments: () -> List<String> = {
         listOf("build", "--disable-experimental-prebuilts")
     }
@@ -50,11 +52,11 @@ fun Project.registerJextractTask(
 
         // monitor all targets/products which depend on the JExtract plugin
         swiftTargetsWithJExtractPlugin().forEach { targetName ->
-            logger.info("[swift-java:jextract (Gradle)] Swift input target: ${targetName}")
-            inputs.dir(File(layout.projectDirectory.asFile, "Sources/${targetName}"))
+            logger.info("[swift-java:jextract (Gradle)] Swift input target: $targetName")
+            inputs.dir(File(layout.projectDirectory.asFile, "Sources/$targetName"))
             outputs.dir(
                 layout.buildDirectory.dir(
-                    "../.build/plugins/outputs/${layout.projectDirectory.asFile.getName().lowercase()}/${targetName}/destination/JExtractSwiftPlugin/src/generated/java"
+                    "../.build/plugins/outputs/${layout.projectDirectory.asFile.getName().lowercase()}/$targetName/destination/JExtractSwiftPlugin/src/generated/${language.name.lowercase()}"
                 )
             )
         }

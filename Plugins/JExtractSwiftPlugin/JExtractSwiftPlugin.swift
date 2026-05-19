@@ -55,7 +55,11 @@ struct JExtractSwiftBuildToolPlugin: SwiftJavaPluginProtocol, BuildToolPlugin {
 
     // We use the the usual maven-style structure of "src/[generated|main|test]/java/..."
     // that is common in JVM ecosystem
-    let outputJavaDirectory = context.outputJavaDirectory
+    var outputJavaDirectory = context.outputJavaDirectory
+    if configuration?.mode?.rawValue == "kotlin" {
+      outputJavaDirectory = context.outputKotlinDirectory
+    }
+    
     let outputSwiftDirectory = context.outputSwiftDirectory
 
     let dependentConfigFiles = searchForDependentConfigFiles(in: target)
