@@ -5,6 +5,8 @@
 //  Created by Tanish Azad on 12/04/26.
 //
 
+import SwiftExtract
+
 extension Swift2KotlinGenerator {
   enum OverflowCheckType {
     case none

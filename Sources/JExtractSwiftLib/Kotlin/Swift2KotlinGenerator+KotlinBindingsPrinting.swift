@@ -6,12 +6,13 @@
 //
 
 import CodePrinting
+import SwiftExtract
 
 extension Swift2KotlinGenerator {
   /// Print the calling body that forwards all the parameters to the `methodName`,
   package func printKotlinBindingPlaceholder(
-    _ printer: inout CodePrinter,
-    _ decl: ImportedFunc,
+    _ printer: inout KotlinPrinter,
+    _ decl: ExtractedFunc,
   ) {
     // let translated = self.translatedDecl(for: decl)!
     let methodName = decl.name
@@ -30,12 +31,12 @@ extension Swift2KotlinGenerator {
     
     var documentation = SwiftDocumentationParser.parse(decl.swiftDecl)
     
-    TranslatedDocumentation.printDocumentation(
-      documentation,
-      syntax: decl.swiftDecl,
-      config: config,
-      in: &printer,
-    )
+//    TranslatedDocumentation.printDocumentation(
+//      documentation,
+//      syntax: decl.swiftDecl,
+//      config: config,
+//      in: &printer,
+//    )
     printer.printBraceBlock(
       """
       fun \(methodName)(\(paramDecls.joined(separator: ", "))): \(translatedReturnTy)

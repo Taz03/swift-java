@@ -63,6 +63,11 @@ public enum JavaLanguage: CodePrinterLanguage {
   public static let defaultOptions = Options()
 }
 
+/// Kotlin output.
+public enum KotlinLanguage: CodePrinterLanguage {
+  public static let defaultInlineCommentStyle: InlineCommentStyle = .slashSlash
+}
+
 // ==== -----------------------------------------------------------------------
 // MARK: Typealiases
 
@@ -73,3 +78,7 @@ public typealias SwiftPrinter = CodePrinter<SwiftLanguage>
 /// Convenience for `CodePrinter<JavaLanguage>`. Use this everywhere a
 /// printer's output is Java code.
 public typealias JavaPrinter = CodePrinter<JavaLanguage>
+
+/// Convenience for `CodePrinter<KotlinLanguage>`. Use this everywhere a
+/// printer's output is Java code.
+public typealias KotlinPrinter = CodePrinter<KotlinLanguage>
