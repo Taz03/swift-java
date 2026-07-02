@@ -2,7 +2,7 @@
 //
 // This source file is part of the Swift.org open source project
 //
-// Copyright (c) 2025 Apple Inc. and the Swift.org project authors
+// Copyright (c) 2024 Apple Inc. and the Swift.org project authors
 // Licensed under Apache License v2.0
 //
 // See LICENSE.txt for license information
@@ -12,18 +12,10 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// Determines which source generation mode JExtract should be using: JNI or Foreign Function and Memory.
-public enum JExtractGenerationMode: String, Sendable, Codable {
-  /// Foreign Value and Memory API
-  case ffm
+public final class SwiftTypeInSubDirectory {
+  public init() {}
 
-  /// Java Native Interface
-  case jni
-  
-  /// Kotlin stub generator
-  case kotlin
-
-  public static var `default`: JExtractGenerationMode {
-    .ffm
+  public func hello() -> Int {
+    12
   }
 }

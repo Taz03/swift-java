@@ -74,6 +74,13 @@ extension PluginContext {
       .appending(path: "generated")
       .appending(path: "java")
   }
+  
+  var outputKotlinDirectory: URL {
+    self.pluginWorkDirectoryURL
+      .appending(path: "src")
+      .appending(path: "generated")
+      .appending(path: "kotlin")
+  }
 
   var outputSwiftDirectory: URL {
     self.pluginWorkDirectoryURL
